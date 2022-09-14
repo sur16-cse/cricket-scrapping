@@ -1,7 +1,7 @@
 const request=require("request")
 const jsdom = require("jsdom");
-const prompt = require('prompt-sync')({sigint: true});
 const { JSDOM } = jsdom;
+const fs=require("fs")
 
 //https://www.espncricinfo.com/series/asia-cup-2022-1327237/match-schedule-fixtures-and-results
 
@@ -43,15 +43,12 @@ const series=(document)=>{
 
 const scoreboard=(document)=>{
   let battingPlayer=document.querySelectorAll(".ds-w-full.ds-table.ds-table-md.ds-table-auto.ci-scorecard-table")
-  //console.log(battingPlayer.length)
   for(let i=0;i<battingPlayer.length;i++){
       let teamPlayer=battingPlayer[i].querySelectorAll("tbody tr");
       for(let j=0;j<teamPlayer.length;j++){
         let cells=teamPlayer[j].querySelectorAll("td");
         if(cells.length===8){
-         // console.log(cells[0])
           let name=cells[0].textContent;
-          //console.log(name)
           let run=cells[2].textContent
           let ball=cells[3].textContent
           let four=cells[5].textContent
@@ -61,12 +58,14 @@ const scoreboard=(document)=>{
     }
   }
   counter--;
-  if(counter==0)
-  console.log(leaderboard)
+  if(counter==0){
+    let pathFromUser = String(readline.question("Enter the json fileName  to create... "))
+    fs.writeFileSync(pathFromUser+".json",JSON.stringify(leaderboard))
+    //console.log(leaderboard)
+  }
 }
 
 const processPlayer=(name,run,ball,four,six)=>{
-  //console.log(name)
   run=Number(run)
   ball=Number(ball)
   four=Number(four)
@@ -91,7 +90,4 @@ const processPlayer=(name,run,ball,four,six)=>{
     Sixes:six
   }
   leaderboard.push(playerObj)
-  //console.log(leaderboard)
 }
-
-//console.log(leaderboard)
